@@ -42,30 +42,32 @@ def send_funny(m):
 
         # Get the subreddit information
         r = praw.Reddit(user_agent='Reddit Tg Amazing App')
-        if tab == "new":
-            submissions = r.get_subreddit(subreddit).get_new(limit=10)
-            # Format the information to send
-            to_send = "New"
-        elif tab == "hot":
-            submissions = r.get_subreddit(subreddit).get_hot(limit=10)
-            # Format the information to send
-            to_send = "Hot"
-        elif tab == "rising":
-            submissions = r.get_subreddit(subreddit).get_rising(limit=10)
-            # Format the information to send
-            to_send = "Rising"
-        elif tab == "top":
-            submissions = r.get_subreddit(subreddit).get_top(limit=10)
-            # Format the information to send
-            to_send = "Top"
+        try:
+            if tab == "new":
+                submissions = r.get_subreddit(subreddit, fetch=True).get_new(limit=10)
+                # Format the information to send
+                to_send = "New"
+            elif tab == "hot":
+                submissions = r.get_subreddit(subreddit, fetch=True).get_hot(limit=10)
+                # Format the information to send
+                to_send = "Hot"
+            elif tab == "rising":
+                submissions = r.get_subreddit(subreddit, fetch=True).get_rising(limit=10)
+                # Format the information to send
+                to_send = "Rising"
+            elif tab == "top":
+                submissions = r.get_subreddit(subreddit, fetch=True).get_top(limit=10)
+                # Format the information to send
+                to_send = "Top"
+        except:
+            bot.reply_to(m, "Ese subreddit no existe!")
+            return
 
         to_send += " reddit posts in /r/{}\n\n".format(subreddit)
+
         for index, elem in enumerate(submissions):
-            try:
-                to_send += "{}. {}\n{}\n".format(index + 1, elem.title, elem.url)
-                to_send += "---------------------------------------------------\n"
-            except:
-                bot.send_message(m.chat.id, "Ese subreddit no existe!")
+            to_send += "{}. {}\n{}\n".format(index + 1, elem.title, elem.url)
+            to_send += "---------------------------------------------------\n"
 
         # Send the message
         bot.send_message(m.chat.id, to_send, disable_web_page_preview=True)
