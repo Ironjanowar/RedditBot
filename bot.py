@@ -26,8 +26,18 @@ bot.set_update_listener(listener)
 # Handlers
 
 
+@bot.message_handler(commands=['start'])
+def start(m):
+    bot.send_message(m.chat.id, "Hola @{}!\n\nEsto es un bot para coger posts de subreddits!\nUsa /help para ver como funciona.".format(m.from_user.username))
+
+
+@bot.message_handler(commands=['help'])
+def help(m):
+    bot.send_message(m.chat.id, "Simplemente envia:\n`/r/subreddit [hot | new | rising | top]`\n\nEjemplo:\n`/r/gifs hot`", parse_mode="Markdown")
+
+
 @bot.message_handler()
-def send_funny(m):
+def send_subreddit(m):
     # Valid command?
     text = m.text
     if text.startswith("/r/"):
@@ -36,7 +46,7 @@ def send_funny(m):
 
         # Select tab
         if len(text.split('/', 2)[2].split(' ', 1)) == 2:
-            tab = text.split('/', 2)[2].split(' ', 1)[1]
+            tab = text.split('/', 2)[2].split(' ', 1)[1].lower()
         else:
             tab = "hot"
 
